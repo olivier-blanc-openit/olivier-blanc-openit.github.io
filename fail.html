@@ -1,0 +1,22 @@
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="./assets/css/styles.css" rel="stylesheet" type="text/css" />
+        <title>Paiement &eacute;chou&eacute;</title>
+    </head>
+
+    <body>
+	<h1>Echec</h1>
+	<p>Echec du paiement</p>
+	<p><i><a id="return">Retourner à l'application...</a></i></p>
+    </body>
+</html>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const callbackUrl = urlParams.get('x-callback-url');
+    if (callbackUrl) {
+        document.getElementById('return').href = `${callbackUrl}?fail=true`;
+    }
+</script>
+
