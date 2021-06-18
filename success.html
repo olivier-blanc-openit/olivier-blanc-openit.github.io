@@ -1,0 +1,47 @@
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="./assets/css/styles.css" rel="stylesheet" type="text/css" />
+        <title>Paiement accepté</title>
+    </head>
+
+    <body>
+	<h1>Success</h1>
+        <p>Paiement accepté</p>
+        <p>Vous allez être redirigé...</p>
+    </body>
+</html>
+
+<script type="text/javascript">
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    const externalAccessToken = urlParams.get('externalAccessToken');
+    const confirmPaymentUrl = urlParams.get('confirmPaymentUrl');
+    const callbackUrl = urlParams.get('x-callback-url');
+    const gqlMutation = `mutation SetPaymentToProceeded($orderId: String, $externalAccessToken: String) {
+        orderPublic {
+            setPaymentToProceeded(orderId: $orderId, externalAccessToken: $externalAccessToken) {
+                success
+            }
+        }
+    }`;
+    const data = JSON.stringify({
+        variables: { orderId, externalAccessToken },
+        query: gqlMutation,
+    });
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (callbackUrl) {
+                window.location = `${callbackUrl}?success=true`;
+            }
+        }
+    });
+
+    xhr.open('POST', confirmPaymentUrl);
+    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.send(data);
+</script>
+
